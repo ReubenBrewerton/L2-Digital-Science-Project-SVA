@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div id = "logo"><img src="{{ url_for('static', filename = 'sva_logo') }}" alt = 'Logo' style="height: 80px"></div>
+        {% for page in pages %}
+            <a href="/{{ page.lower().replace(' ', '_').replace('🔎︎', 'search') }}">{{ page }}</a>
+        {% endfor %}
+    </header>
+</body>
+</html>

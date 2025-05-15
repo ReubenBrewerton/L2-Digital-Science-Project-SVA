@@ -3,6 +3,9 @@ import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
+# Pages
+pages = ["Home", "About", "Programmes", "News", "Contact", "Volunteer", "DONATE", "🔎︎"]
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,6 +23,15 @@ with app.app_context():
         hours = db.Column(db.Integer, nullable=True)
     db.create_all()
 
-    # Print all users in the console
+def sanitize_route(page_name):
+    # Sanitize page names to create routes
+    return page_name.lower().replace(" ", "_").replace("🔎︎", "search")
 
-    
+@app.route('/')
+def index():
+    return render_template('index.html', pages=pages)
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
