@@ -1,0 +1,30 @@
+/* CSS file for the website */
+header {
+    background-color: rgb(33,29,81);
+    display: flex;
+    padding: 20px;
+}
+
+.links{
+    display: flex;
+    height:50px;
+    padding: 30px;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
+
+.links :hover {
+    background-color: #4c67ff;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: 0.5s;
+    font-size: 23px;
+    text-decoration: bold;
+}
+
+#logo {
+    padding-right: 600px;
+}

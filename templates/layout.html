@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <header>
+        <div id = "logo"><img src="{{ url_for('static', filename = 'sva_logo.png') }}" alt = 'Logo' style="height: 100px"></div>
+        {% for page in pages %}
+        <div class = 'links'>
+            <a href="/{{ page.lower().replace(' ', '_').replace('🔎︎', 'search') }}" style="text-decoration: none; color:rgb(255,255,255);">{{ page }}</a>
+        </div>
+        {% endfor %}
+        <h1>
+        </h1>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <a href="https://www.facebook.com/StudentVolunteerArmy/"><img src="{{ url_for('static', filename='facebook.png') }}" alt="Facebook" style="height: 60px; padding-right:6px;"></a>
+        <a href="https://www.instagram.com/studentvolunteerarmy/"><img src="{{ url_for('static', filename='instagram.png') }}" alt="Instagram" style="height: 60px;"></a>
+        <a href="https://www.linkedin.com/company/student-volunteer-army/"><img src="{{ url_for('static', filename='linkedin.png') }}" alt="LinkedIn" style="height: 70px;"></a>
+        <p id = 'charity'>Charity registration number: CC47611</p>
+        <div class="footer_links">    
+            <a href="https://static1.squarespace.com/static/65dff264c768b913ba2ac4ef/t/662732d4f8221f6fc58dc518/1713844948778/Privacy+Policy+%282%29.pdf" style="color: white;">PRIVACY POLICY</a>
+            <p style="padding: 10px;">|</p>
+            <a href="https://static1.squarespace.com/static/65dff264c768b913ba2ac4ef/t/6627329da39e914344e625c7/1713844894442/Terms+and+conditions.pdf" style="color: white;">TERMS AND CONDITIONS</a>
+</body>
+</html>

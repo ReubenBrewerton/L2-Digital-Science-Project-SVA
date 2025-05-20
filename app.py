@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 # Pages
-pages = ["Home", "About", "Programmes", "News", "Contact", "Volunteer", "DONATE", "🔎︎"]
+pages = ["Home", "About", "Programmes", "News", "Contact", "Volunteer", "DONATE",]
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -22,16 +22,17 @@ with app.app_context():
         last_name = db.Column(db.String(80), nullable=False)
         hours = db.Column(db.Integer, nullable=True)
     db.create_all()
+    users = User.query.all()
 
 def sanitize_route(page_name):
     # Sanitize page names to create routes
-    return page_name.lower().replace(" ", "_").replace("🔎︎", "search")
+    return page_name.lower().replace(" ", "_")
 
+# Route for each page
 @app.route('/')
 def index():
-    return render_template('index.html', pages=pages)
+    return render_template('index.html', pages=pages, users = users)
 
-
-
+# Run the app
 if __name__ == '__main__':
     app.run(debug=True)
