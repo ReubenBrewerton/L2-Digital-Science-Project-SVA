@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<div style="display: flex">
+    <div style="display: block; padding: 30px;">
+        <h1 style="font-size: 50px;">Student Volunteer Army</h1>
+        <p style="font-size: larger;">Join the Student Volunteer Army in making a difference in our community! We invite you to lend a helping hand and participate in various volunteer opportunities that we have throughout the year. Whether you're passionate about education, environmental initiatives, or community service, there’s a place for you in our efforts. Volunteering not only allows you to give back but also to gain valuable experiences and meet like-minded individuals. Interested? For more information, please contact us at hello@sva.org.nz. Together, we can create positive change!</p>
+        <div id="homevolunteer">
+            <button id="volunteerbutton" href="volunteer.html">Volunteer</a>
+        </div>
+    </div>
+    <div id="homeimage" style="display: inline-block; width: 200%; padding: 20px;">
+        <img src="{{ url_for('static', filename='home_image.png') }}" alt="Home Image" style="width: 100%; height: auto;">
+    </div>
+</div>
+<div id="impactsection" style="padding-left: 50px;"> 
+    <h1 id="impacttitle">Our Impact</h1>
+    <div style="display: inline-block;">
+        <div class="impactbox">
+            <h1>2,000,000+</h1>
+            <p>Hours of Volunteering</p>
+        </div>
+        <div class="impactbox">
+            <h1>45,000+</h1>
+            <p>Registered Volunteers</p>
+        </div>
+        <div class="impactbox">
+            <h1>258</h1>
+            <p>Active SVA Service Award Schools</p>
+        </div>
+        <div class="impactbox">
+            <h1>7</h1>
+            <p>SVA Clubs at 6 tertiary education institutions</p>
+        </div>
+        <div class="impactbox">
+            <h1>$13,425,494</h1>
+            <p>Financial equivalent of hours volunteered (at $23.15 an hour)</p>
+    </div>
+</div>
+
+
+{% endblock %}

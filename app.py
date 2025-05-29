@@ -24,14 +24,30 @@ with app.app_context():
     db.create_all()
     users = User.query.all()
 
-def sanitize_route(page_name):
-    # Sanitize page names to create routes
-    return page_name.lower().replace(" ", "_")
 
-# Route for each page
+
+# Route for index page
 @app.route('/')
 def index():
     return render_template('index.html', pages=pages, users = users)
+
+# Sanitize page names to create routes
+def sanitize_route(page_name):
+    return page_name.lower().replace(" ", "_")
+
+# Gets the current page name
+def catch_all(path):
+    current_page = request.path
+
+# Route for all pages
+@app.route('/<page_name>')
+def page(page_name):
+    sanitized_page_name = sanitize_route(page_name) # Use the sanitized page name
+    if sanitized_page_name in [sanitize_route(p) for p in pages]:
+        return render_template(f'{sanitized_page_name}.html', pages=pages, users = users) # Renders the html file for the sanitized page
+    else:
+        return "Page not found", 404
+
 
 # Run the app
 if __name__ == '__main__':

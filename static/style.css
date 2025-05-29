@@ -28,3 +28,88 @@ header {
 #logo {
     padding-right: 600px;
 }
+
+footer {
+    display: flex;
+    background-color: rgb(33,29,81);
+    height: 100px;
+    justify-content: left;
+    align-items: center;
+    font-size: 20px;
+    padding:20px;
+    color: white;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.footer_links {
+    color: white;
+    padding-top: 0px;
+    padding-left:600px;
+    align-items: center;
+    display: flex;
+    width: auto;
+}
+
+#charity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+body {
+    margin: 0px;
+}
+
+#mailto {
+    text-decoration: underline;
+    color: white;
+}
+
+#volunteerbutton {
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: black;
+    border-radius: 5px;
+}
+
+#volunteerbutton:hover {
+    background-color: #4c67ff;
+    color: white;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+#impacttitle {
+    text-align: center;
+    font-size: 50px;
+    padding: 20px;
+}
+
+#impactsection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.impactbox {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 280px;
+    height: 280px;
+    padding: 40px;
+    background-color: rgb(33,29,81);
+    color: white;
+}
