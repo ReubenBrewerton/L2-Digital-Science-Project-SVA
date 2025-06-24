@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 style="padding-left: 30px; font-size: xxx-large; text-align: center;">About SVA</h1>
+<div>
+    <div id="aboutimage" style="display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; max-height: 600px; object-fit: cover;">
+        <img src="{{ url_for('static', filename='about_image.jpg') }}" alt="About Image" style="width: 100%; height: 50%;">
+    </div>
+    <div style="display: flex;">
+        <div style="padding-left: 50px;">
+            <h1 style="font-size: xxx-large;">Our Mission</h1>
+            <div>
+                <ul style="font-size: x-large;">
+                    <li>To provide a platform for students to share their academic and extracurricular achievements.</li>
+                    <li>To foster a community of learners who support each other in their educational journeys.</li>
+                    <li>To promote transparency and accountability in student activities.</li>
+                    <li>To encourage collaboration among students, faculty, and administration.</li>
+                    <li>Empower rangatahi with the skills, passion and confidence that is gained through volunteering.</li>
+                    <li>Cultivate a culture of service that will last across generations.</li>
+                    <li>Build resilient communities that are connected and ready to respond when crisis hits.</li>
+                </ul>
+            </div>
+        </div>
+        <div style="width: 60%">
+            <h1 style="font-size: xxx-large; padding-left: 50px;">Our Values</h1>
+            <div style="padding-left: 50px; font-size: x-large;">
+                <ul>
+                    <li>We play to our strengths: We maximise our collective potential by embracing individual strengths, nurturing them to their fullest and leveraging them to achieve excellence in every action we take.</li>
+                    <li>We connect with intent: We forge genuine connections driven by empathy and purpose, which underpins our shared journey toward greater understanding and impact.</li>
+                    <li>We inspire meaningful action: We design and deliver programmes that empower individuals to take purposeful, impactful steps toward a brighter future, enabling a collective movement for change.</li>
+                    <li>We show up to help: We embody a culture of unwavering support, actively seeking opportunities to lend a hand and elevate others, whenever and wherever it's needed.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<h1 style="font-size: xxx-large; text-align: center;">Our Story</h1>
+<div style="display: flex;">
+    <div style="padding-left: 50px; font-size: x-large; width: 300%">
+        <p>On September 4th 2010, a 7.1 magnitude earthquake struck Canterbury, New Zealand, causing widespread damage - particularly in the city of Ōtautahi Christchurch. In the wake of the disaster, 11,000 students mobilised to help with the clean-up - coordinated by our founder, Sam Johnson.</p> 
+        <p>This was the beginning of the Student Volunteer Army.</p>
+        <p>Today, SVA is a network of tens of thousands of volunteers driven by a desire to help their communities. Our programmes at primary, secondary and tertiary education levels empower youth through volunteering; cultivate a lasting culture of service; and build resilient, connected communities.</p>
+        <p>Together, we show up for the big events. We have evolved to become leaders of second wave crisis response, helping communities recover after disaster. Over the past decade, SVA volunteers have supported clean-up and recovery after eight national crisis events - from collecting and delivering groceries during the Covid-19 lockdowns in 2020 to operating major clean-up operations after the Auckland Anniversary weekend floods, closely followed by Cyclone Gabrielle, in 2023.</p>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; overflow: hidden; width: 90%; object-fit: cover;">
+        <img src="{{ url_for('static', filename='story_image.jpg') }}" alt="Story Image" style="width: 100%; height: 100%;">
+    </div>
+</div>
+<div style="padding: 70px; text-align: center;">
+    <h2 style="font-size: xx-large;">Join Us in Making a Difference!</h2>
+    <p style="font-size: x-large;">We invite you to be part of our mission. Together, we can create a positive impact in our community and beyond.</p>
+    <div id="homevolunteer">
+        <button id="volunteerbutton" href="volunteer.html">Volunteer</a>
+    </div>
+</div>
+{% endblock %}

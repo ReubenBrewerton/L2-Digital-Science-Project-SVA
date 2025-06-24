@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div style="padding: 50px;">
+    <h1 style="padding-left: 30px; font-size: xxx-large; text-align: center;">Contact SVA</h1>
+    <p style="font-size: xx-large; font-weight: bold;">We'd love to hear from you!</p>
+        <p style="font-size: xx-large;">Our team work remotely from all over New Zealand, so the best way to get in touch is by filling out the contact form here, sending us an email or giving us a call.
+        Email: hello@sva.org.nz Phone: 0508782782 Mail address: PO Box 18913, New Brighton, Christchurch 8641</p>
+</div>
+<div style="padding: 50px; border-radius: 10px; background-color: rgb(33,29,81); color: white;">
+    <div style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+        <form action="{{ url_for('contact') }}" method="post" style="width: 50%;">
+            <label for="name" style="font-size: x-large;">Name:</label><br>
+            <input type="text" id="name" name="name" required style="width: 100%; padding: 10px; font-size: large;"><br><br>
+            <label for="email" style="font-size: x-large;">Email:</label><br>
+            <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; font-size: large;"><br><br>
+            <label for="message" style="font-size: x-large;">Message:</label><br>
+            <textarea id="message" name="message" rows="4" required style="width: 100%; padding: 10px; font-size: large;"></textarea><br><br>
+            <button type="submit" style="padding: 10px 20px; font-size: x-large;">Send Message</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

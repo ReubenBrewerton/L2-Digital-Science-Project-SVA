@@ -12,7 +12,7 @@
         <img src="{{ url_for('static', filename='home_image.png') }}" alt="Home Image" style="width: 100%; height: auto;">
     </div>
 </div>
-<div id="impactsection" style="padding-left: 50px;"> 
+<div id="impactsection" style="padding-left: 50px; padding-bottom: 50px;"> 
     <h1 id="impacttitle">Our Impact</h1>
     <div style="display: inline-block;">
         <div class="impactbox">
@@ -29,13 +29,25 @@
         </div>
         <div class="impactbox">
             <h1>7</h1>
-            <p>SVA Clubs at 6 tertiary education institutions</p>
+            <p>SVA Clubs at 6 tertiary schools</p>
         </div>
         <div class="impactbox">
             <h1>$13,425,494</h1>
-            <p>Financial equivalent of hours volunteered (at $23.15 an hour)</p>
+            <p>Financial equivalent of hours volunteered</p>
+        </div>
     </div>
 </div>
+<div id="buildingcommunity" style="display: flex; padding: 70px; justify-content: center; align-items: center;">
+    <div style="display:inline-block">
+        <img src="{{ url_for('static', filename='building_community.jpg') }}" alt="Building Community" style="width:700px;">
+    </div>
+    <div style="display:inline-block; width: 50%; font-size: larger; padding-left: 80px; padding-top: 50px;">
+        <h1>Building the Next Generation of Community</h1>
+        <p style="padding-bottom: 100px;">Born out of a student-led clean-up operation after the 2010 Christchurch earthquake, the Student Volunteer Army (SVA) is now a network of tens of thousands of volunteers driven by a desire to help their communities.
 
-
+            Every situation we commit to is an opportunity to put something right in the world. Through our programmes, rangatahi are empowered and enabled to change the world in front of them every day – whether it’s mowing a neighbour’s lawn or taking action to reverse the effects of climate change. The United Nations Sustainable Development Goals underpins our work, providing a framework that connects individual volunteers to a global movement.
+            
+            Thanks to support from our funders, partners and public donations, all our programmes are free for students and teachers to take part in.</p>
+    </div>
+</div>
 {% endblock %}
