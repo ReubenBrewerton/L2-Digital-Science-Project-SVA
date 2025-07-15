@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, session, url_for, g
+from flask import Flask, render_template, request, redirect, session, url_for, g 
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from flask_login import login_required, current_user, login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash 
+from flask_login import LoginManager
 
 # Pages
 pages = ["Home", "About", "Contact", "Volunteer", "DONATE",]
@@ -9,6 +12,17 @@ pages = ["Home", "About", "Contact", "Volunteer", "DONATE",]
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'my_secret_key'
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 with app.app_context():
     # Initialize the database
@@ -46,6 +60,23 @@ with app.app_context():
 def index():
     return render_template('index.html', pages=pages, users = users)
 
+# Route for login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Authenticate user
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            return "Invalid credentials", 401
+
+    return render_template('login.html', pages=pages)
+
 # Sanitize page names to create routes
 def sanitize_route(page_name):
     return page_name.lower().replace(" ", "_")
@@ -54,7 +85,7 @@ def sanitize_route(page_name):
 def catch_all(path):
     current_page = request.path
 
-# Route for all pages
+# Route for all pages except volunteer
 @app.route('/<page_name>')
 def page(page_name):
     sanitized_page_name = sanitize_route(page_name) # Use the sanitized page name
@@ -63,6 +94,13 @@ def page(page_name):
     else:
         return "Page not found", 404
     
+# Route for volunteer page
+@app.route('/volunteer')
+@login_required
+def volunteer():
+    return render_template('volunteer.html', pages=pages, users=users)
+
+# Get contact information
 @app.route('/Contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
@@ -82,6 +120,12 @@ def contact():
         return redirect(url_for('index'))  # Redirect to index after handling POST request
 
     return render_template('contact.html', pages=pages)  # Render contact page for GET request
+
+@app.route('/donate', methods=['POST'])
+def donate():
+    donation_amount = request.form.get('amount')
+    
+
 
 @app.route('/subscribe', methods=['POST'])
 def subscribe():

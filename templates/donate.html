@@ -6,10 +6,23 @@
         <h1>Will you help build the next generation of community?</h1>
     </div>
     <div id="donateform">
-        <form action url_for('donate') method="post">
-            <label for="amount">Donation Amount:</label>
-            <input type="number" id="amount" name="amount" required min="1" step="any">
-            <button type="submit">Donate</button>
+        <button type="button" class="donation_amount_button">
+            <p>$50</p>
+        </button>
+        <button type="button" class="donation_amount_button">
+            <p>$100</p>
+        </button>
+        <button type="button" class="donation_amount_button">
+            <p>$500</p>
+        </button>
+        <button type="button" class="donation_amount_button">
+            <p>$1,000</p>
+        </button>
+        <div>
+            <form id="custom_amount_donation">
+                <input placeholder="$10">
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -128,3 +128,13 @@ body {
     padding: 20px;
 }
 
+
+#donateform {
+    margin: 0px auto; 
+    max-width: 420px; 
+    width: 100%;
+}
+
+.donate_amount_button {
+    width: 100px;
+}
