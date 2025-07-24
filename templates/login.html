@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="login">
+    <h1>Log In Or Sign Up Today</h1>
+    <form action="{{ url_for('login')}}" method="post">
+        <div class="loginform">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Log In</button>
+        </div>
+    </form>
+    {% if invalid_login==True %}
+    <p style="color: red;">Invalid email or password. Please try again.</p>
+    {% endif %}
+    <h1>Don't have an account? Sign up here.</h1>
+    <a href="{{ url_for('signup') }}" style="text-decoration: none; color: rgb(255, 255, 255);">
+        <button style="background-color: rgb(33, 29, 81); color: white; padding: 10px; border-radius: 5px;">Sign Up</button>
+</div>
+{% endblock %}

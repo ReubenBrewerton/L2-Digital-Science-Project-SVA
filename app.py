@@ -24,35 +24,49 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# Initialize the database
+db = SQLAlchemy(app)
+
+# Define the User model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    first_name = db.Column(db.String(80), nullable=False)
+    last_name = db.Column(db.String(80), nullable=False)
+    hours = db.Column(db.Integer, nullable=True)
+
+    # Flask-Login required properties and methods
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
+# Define the mailing list model
+class mailinglist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+
+# Define the Contact model
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+
 with app.app_context():
-    # Initialize the database
-    db = SQLAlchemy(app)
-    # Creating the table
-    class User(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        email = db.Column(db.String(80), unique=True, nullable=False)
-        password = db.Column(db.String(120), nullable=False)
-        first_name = db.Column(db.String(80), nullable=False)
-        last_name = db.Column(db.String(80), nullable=False)
-        hours = db.Column(db.Integer, nullable=True)
     db.create_all()
     users = User.query.all()
-
-with app.app_context():
-    # Create a mailing list table
-    class mailinglist(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        email = db.Column(db.String(80), unique=True, nullable=False)
-    db.create_all()
-
-with app.app_context():
-    # Contact table
-    class Contact(db.Model):
-        id= db.Column(db.Integer, primary_key=True)
-        email = db.Column(db.String(80), nullable=False)
-        name = db.Column(db.String(80), nullable=False)
-        message = db.Column(db.Text, nullable=False)
-    db.create_all()
 
 
 # Route for index page
@@ -60,8 +74,50 @@ with app.app_context():
 def index():
     return render_template('index.html', pages=pages, users = users)
 
+@app.route('/signup', methods=['GET','POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        if not email:
+            return "Email is required", 400
+        password = request.form.get('password')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        confirm_password = request.form.get('confirm_password')
+
+        # Check if passwords match
+        if password != confirm_password:
+            passwords_match = False
+            return render_template('signup.html', pages=pages, passwords_match=passwords_match)  # Redirect to signup if passwords do not match
+
+        # Check if the user already exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            existing = True
+            return render_template('signup.html', existing=existing, pages=pages)  # Redirect to signup if user exists
+        else:
+            # Create a new user
+            new_user = User(
+                email=email, 
+                password=generate_password_hash(password, method='pbkdf2:sha256', salt_length=8), 
+                first_name=first_name, 
+                last_name=last_name,
+                hours=0  # Initialize hours to 0
+            )
+            with app.app_context():
+                db.session.add(new_user)
+                db.session.commit()
+            success = True
+            return render_template('signup.html', success=success, pages=pages)
+        
+        
+
+    return render_template('signup.html', pages=pages)
+    
+
+ 
 # Route for login page
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -69,13 +125,20 @@ def login():
 
         # Authenticate user
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
+        if user and check_password_hash(user.password, password.strip()):
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('volunteer')) # Redirect to volunteer page after successful login
         else:
-            return "Invalid credentials", 401
+            invalid_login = True
+            return render_template('login.html', pages=pages, invalid_login=invalid_login)
 
     return render_template('login.html', pages=pages)
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    return redirect(url_for('login'))  # Redirect to login page after logout
+
 
 # Sanitize page names to create routes
 def sanitize_route(page_name):
