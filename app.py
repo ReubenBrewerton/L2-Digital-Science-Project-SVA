@@ -5,6 +5,7 @@ from sqlalchemy import text
 from flask_login import login_required, current_user, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash 
 from flask_login import LoginManager
+from datetime import datetime
 
 # Pages
 pages = ["Home", "About", "Contact", "Volunteer", "DONATE",]
@@ -13,6 +14,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'my_secret_key'
+
+
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -64,6 +67,23 @@ class Contact(db.Model):
     name = db.Column(db.String(80), nullable=False)
     message = db.Column(db.Text, nullable=False)
 
+# Define the Activity model
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    date = db.Column(db.String(80), nullable=False)  # Use string for simplicity
+    time = db.Column(db.String(80), nullable=False)  # Use string for simplicity
+    location = db.Column(db.String(120), nullable=False)
+
+# Define the activities
+activities = [
+    Activity(name='Beach Cleanup', description='Join us for a beach cleanup to keep our shores clean.', date='2025-10-01', time='10:00 AM - 2:00 PM', location='Local Beach'),
+    Activity(name='Tree Planting', description='Help us plant trees in the community park.', date='2025-10-15', time='9:00 AM - 1:00 PM', location='Community Park'),
+    Activity(name='Food Drive', description='Donate non-perishable food items to help those in need.', date='2025-10-20', time='8:00 AM - 4:00 PM', location='Community Center'),
+]
+
+# Initialize the database and create tables if they don't exist
 with app.app_context():
     db.create_all()
     users = User.query.all()
@@ -139,6 +159,39 @@ def logout():
     logout_user()
     return redirect(url_for('login'))  # Redirect to login page after logout
 
+@app.route('/log_hours', methods=['GET', 'POST'])
+def log_hours():
+    if request.method == 'POST':
+        hours = calculateTimeDifference(request.form.get('start_time'), request.form.get('end_time'))
+        if not hours:
+            hours_required = True
+            return redirect(url_for('volunteer'))
+        try:
+            hours = int(hours)
+        except ValueError:
+            invalid_hours = True
+            return redirect(url_for('volunteer'))
+        if hours <= 0:
+            less_than_zero = True
+            return redirect(url_for('volunteer'))
+        if hours > 24:
+            exceeded_24 = True
+            return redirect(url_for('volunteer'))
+        # Update current user's hours
+        current_user.hours += hours
+        db.session.commit()
+        activity_name = request.form.get('activity')
+        if not activity_name:
+            return "Activity name is required", 400
+        # Create a new activity entry
+        new_activity = Activity(
+            name=activity_name,
+            description=f"Logged {hours} hours for {activity_name}",
+            date=datetime.now().strftime('%Y-%m-%d'),
+            time=datetime.now().strftime('%H:%M'),
+        )
+        
+        return redirect(url_for('volunteer'))
 
 # Sanitize page names to create routes
 def sanitize_route(page_name):
@@ -148,7 +201,7 @@ def sanitize_route(page_name):
 def catch_all(path):
     current_page = request.path
 
-# Route for all pages except volunteer
+# Route for all pages
 @app.route('/<page_name>')
 def page(page_name):
     sanitized_page_name = sanitize_route(page_name) # Use the sanitized page name
@@ -156,12 +209,49 @@ def page(page_name):
         return render_template(f'{sanitized_page_name}.html', pages=pages, users = users) # Renders the html file for the sanitized page
     else:
         return "Page not found", 404
-    
+
+# Badge calculation logic moved to a function
+def calculate_badge(hours):
+    if hours < 5 and hours >= 0:
+        current_badge = "No Badge"  # Current badge is No Badge
+        next_badge = "Member Badge"
+        remaining_hours = 5 - (hours % 5)
+    elif hours < 32 and hours >= 5:
+        current_badge = "Member Badge"  # Current badge is Member
+        next_badge = "Bronze Badge"
+        remaining_hours = 32 - (hours % 32)
+    elif hours < 250 and hours >= 32:
+        current_badge = "Bronze Badge"  # Current badge is Bronze
+        next_badge = "Silver Badge"
+        remaining_hours = 250 - (hours % 250)
+    elif hours < 500 and hours >= 250:
+        current_badge = "Silver Badge"  # Current badge is Silver
+        next_badge = "Gold Badge"
+        remaining_hours = 500 - (hours % 500)
+    else:
+        current_badge = "Gold Badge"  # Current badge is Gold
+        next_badge = "No next badge. Congratulations on reaching the maximum badge level!"
+        remaining_hours = 0
+    return next_badge, remaining_hours, current_badge
+
 # Route for volunteer page
 @app.route('/volunteer')
 @login_required
 def volunteer():
-    return render_template('volunteer.html', pages=pages, users=users)
+    hours = current_user.hours
+    next_badge, remaining_hours, current_badge = calculate_badge(hours)
+    return render_template('volunteer.html', pages=pages, users=users, activities=activities, hours=hours, next_badge=next_badge, remaining_hours=remaining_hours, current_badge=current_badge, hours_required=hours_required)
+
+def calculateTimeDifference(start_time, end_time):
+    # convert start_time and end_time to hours
+    end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M')
+    start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M')
+    time_difference = end_time - start_time
+    # convert time_difference to hours
+    hours = time_difference.total_seconds() / 3600
+    return hours
+
+completed_activities = []
 
 # Get contact information
 @app.route('/Contact', methods=['GET', 'POST'])

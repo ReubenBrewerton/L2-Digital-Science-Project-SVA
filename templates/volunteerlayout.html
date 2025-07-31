@@ -15,11 +15,68 @@
         </h1>
     </header>
     <main>
-        {% block sidebar %}
-        {% endblock %}
-        {% block content %}
-        {% endblock %}
+        <div id="titlebar" style="padding-top: 40px; display: flex;">
+            <h1 style="padding:50px;">Hours</h1>
+            <h1 style="padding:50px; padding-left: 300px;">Activity Feed</h1>
+            <h1 style="padding:50px; padding-left: 300px;">Log Hours</h1>
+        </div>
+        <div id="content" style="display: inline-block; vertical-align: top; margin-left: 20px;">
+            <div>
+                <div id='hoursvolunteered'>
+                    <h1>Hours Volunteered</h1>
+                    <p>Total Hours: {{ hours }}</p>
+                </div>
+                <div id="awards">
+                    <h1>Awards</h1>
+                    {% if current_badge == "Member Badge" %}
+                    <img src="{{ url_for('static', filename='1.-Member-Badge.png') }}" alt="Member_Award" style="height: 50px; width: 50px;">
+                    <p>Member Award</p>
+                    <p>Next Badge in {{remaining_hours}} hours.</p>
+                    {% elif current_badge == "Bronze Badge" %}
+                    <img src="{{ url_for('static', filename='2.-Bronze-Badge.png') }}" alt="Bronze_Award" style="height: 50px; width: 50px;">
+                    <p>Bronze Award</p>
+                    <p>Next Badge in {{remaining_hours}} hours.</p>
+                    {% elif current_badge == "Silver Badge" %}
+                    <img src="{{ url_for('static', filename='3.-Silver-Badge.png') }}" alt="Silver_Award" style="height: 50px; width: 50px;">
+                    <p>Silver Award</p>
+                    <p>Next Badge in {{remaining_hours}} hours.</p>
+                    {% elif current_badge == "Gold Badge" %}
+                    <img src="{{ url_for('static', filename='4.-Gold-Badge.png') }}" alt="Gold_Award" style="height: 50px; width: 50px;">
+                    <p>Gold Award</p>
+                    <p>No Next Badge G</p>
+                    {% else %}
+                    <p>No awards earned yet. Keep volunteering to earn badges!</p>
+                    <p>Next Badge in {{remaining_hours}} hours.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <div class="volunteer-header" style="padding: 20px;">
+                    <h1>Volunteer Activity Feed</h1>
+                    <p>Stay updated with the latest volunteer activities and events.</p>
+                </div>
+                <div class="activity-feed">
+                    {% if activities %}
+                        {% for activity in activities %}
+                            <div class="activity-item">
+                                <h2>{{ activity.name }}</h2>
+                                <p>{{ activity.description }}</p>
+                                <p><strong>Date:</strong> {{ activity.date }}</p>
+                                <p><strong>Time:</strong> {{ activity.time }}</p>
+                                <p><strong>Location:</strong> {{ activity.location }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No recent activities found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
     </main>
+    <style>
+
+    </style>
     <footer>
         <a href="https://www.facebook.com/StudentVolunteerArmy/"><img src="{{ url_for('static', filename='facebook.png') }}" alt="Facebook" style="height: 60px; padding-right:6px; padding-left: 10px;"></a>
         <a href="https://www.instagram.com/studentvolunteerarmy/"><img src="{{ url_for('static', filename='instagram.png') }}" alt="Instagram" style="height: 60px;"></a>

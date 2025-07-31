@@ -1,6 +1,118 @@
-{% extends 'volunteerlayout.html' %}
-{% block sidebar %}
-<div>
-    <h1>hello</h1>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+</head>
+<body>
+    <header>
+        <div id = "logo"><img src="{{ url_for('static', filename = 'sva_logo.png') }}" alt = 'Logo' style="height: 100px"></div>
+        {% for page in pages %}
+            <a class="links" href="/{{ page.lower().replace(' ', '_') }}" style="text-decoration: none; color:rgb(255,255,255);">{{ page }}</a>
+        {% endfor %}
+        <h1>
+        </h1>
+    </header>
+    <main>
+        <div id="hoursandactivity" style="display: flex;">
+            <div style="padding: 100px;">
+                <div id='hoursvolunteered' style="display: flex; flex-direction: column; align-items: left; gap: 10px; font-size: larger;">
+                <h1>Hours Volunteered</h1>
+                <h2>Total Hours: {{ hours }}</h2>
+                </div>
+                <div id="awards" style="display: flex; flex-direction: column; align-items: left; font-size: larger;">
+                    <h1>Current Award</h1>
+                    {% if current_badge %}
+                        {% if current_badge == "Member Badge" %}
+                        <img src="{{ url_for('static', filename='1.-Member-Badge.png') }}" alt="Member_Award" style="height: 90px; width: 90px;">
+                        <h2>Member Award</h2>
+                        <p>Next Badge in {{remaining_hours}} hours.</p>
+                        {% elif current_badge == "Bronze Badge" %}
+                        <img src="{{ url_for('static', filename='2.-Bronze-Badge.png') }}" alt="Bronze_Award" style="height: 90; width: 90px;">
+                        <h2>Bronze Award</h2>
+                        <p>Next Badge in {{remaining_hours}} hours.</p>
+                        {% elif current_badge == "Silver Badge" %}
+                        <img src="{{ url_for('static', filename='3.-Silver-Badge.png') }}" alt="Silver_Award" style="height: 90px; width: 90px;">
+                        <h2>Silver Award</h2>
+                        <p>Next Badge in {{remaining_hours}} hours.</p>
+                        {% elif current_badge == "Gold Badge" %}
+                        <img src="{{ url_for('static', filename='4.-Gold-Badge.png') }}" alt="Gold_Award" style="height: 90px; width: 90px;">
+                        <h2>Gold Award</h2>
+                        <p>No Next Badge, Good Job.</p> 
+                        {% endif %}
+                    {% else %}
+                    <p>No awards earned yet. Keep volunteering to earn badges!</p>
+                    <p>Next Badge in {{remaining_hours}} hours.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="width: 400px; padding: 100px;">
+                <h1>Log Hours</h1>
+                <div style="display: flexl; flex-direction: column; gap: 10px;">
+                    <h2>Log your volunteer hours and activities here.</h2>
+                    <form action="/log_hours" method="post">
+                    <label for="start_time">Start Time:</label><br>
+                    <input type="datetime-local" id="start_time" name="start_time" required><br>
+                    <label for="end_time">End Time:</label><br>
+                    <input type="datetime-local" id="end_time" name="end_time" required><br>
+                    <label for="activity">Activity:</label><br>
+                    <input type="text" id="activity" name="activity" required><br>
+                    <button type="submit" id="log_hours_button">Log Hours</button><br>
+                    </form>
+                    {% if hours_required == True %}
+                    <p style="color: red; font-weight: bold;">Hours are required</p>
+                    {% elif invalid_hours == True %}
+                    <p style="color: red; font-weight: bold;">Invalid hours format</p>
+                    {% elif less_than_0 == True %}
+                    <p style="color: red; font-weight: bold;">Hours must be greater than 0</p>
+                    {% elif exceeded_24 == True %}
+                    <p style="color: red; font-weight: bold;">Hours cannot exceed 24 hours</p>
+                    {% elif success == True %}
+                    <p style="color: green; font-weight: bold;">Hours logged successfully!</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="activity-feed" style="padding: 100px;">
+                <h1>Volunteer Activity Feed</h1>
+                <p>Stay updated with the latest volunteer activities and events.</p>
+                {% if activities %}
+                    {% for activity in activities %}
+                        <div class="activity-item">
+                            <h2>{{ activity.name }}</h2>
+                            <p>{{ activity.description }}</p>
+                            <p><strong>Date:</strong> {{ activity.date }}</p>
+                            <p><strong>Time:</strong> {{ activity.time }}</p>
+                            <p><strong>Location:</strong> {{ activity.location }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No recent activities found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <style>
+
+    </style>
+    <footer>
+        <a href="https://www.facebook.com/StudentVolunteerArmy/"><img src="{{ url_for('static', filename='facebook.png') }}" alt="Facebook" style="height: 60px; padding-right:6px; padding-left: 10px;"></a>
+        <a href="https://www.instagram.com/studentvolunteerarmy/"><img src="{{ url_for('static', filename='instagram.png') }}" alt="Instagram" style="height: 60px;"></a>
+        <a href="https://www.linkedin.com/company/student-volunteer-army/"><img src="{{ url_for('static', filename='linkedin.png') }}" alt="LinkedIn" style="height: 70px;"></a>
+        <p id = 'charity'>Charity registration number: CC47611</p>
+        <a href="mailto:hello@sva.org.nz" id="mailto">hello@sva.org.nz</a>
+        <div class="footer_links">    
+            <a href="https://static1.squarespace.com/static/65dff264c768b913ba2ac4ef/t/662732d4f8221f6fc58dc518/1713844948778/Privacy+Policy+%282%29.pdf" style="color: white;">PRIVACY POLICY</a>
+            <p style="padding: 10px;">|</p>
+            <a href="https://static1.squarespace.com/static/65dff264c768b913ba2ac4ef/t/6627329da39e914344e625c7/1713844894442/Terms+and+conditions.pdf" style="color: white;">TERMS AND CONDITIONS</a>
+        </div>
+        <div id="mailinglist">
+            <form action="/subscribe" method="post">
+                <label for="email">Enter your email to recieve quarterly updates from SVA</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email">
+                <button type="submit" style="background-color: white; padding: 5px; border-radius: 5px;">Subscribe</button>
+            </form>
+        </div>
+    </footer>
+</body>
+</html>
