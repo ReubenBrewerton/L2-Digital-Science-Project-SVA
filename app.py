@@ -2,13 +2,12 @@ from flask import Flask, render_template, request, redirect, session, url_for, g
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from flask_login import login_required, current_user, login_user, logout_user
+from flask_login import login_required, current_user, login_user, logout_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash 
-from flask_login import LoginManager
 from datetime import datetime
 
 # Pages
-pages = ["Home", "About", "Contact", "Volunteer", "DONATE",]
+pages = ["Home", "About", "Contact", "Volunteer"]
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -72,8 +71,8 @@ class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    date = db.Column(db.String(80), nullable=False)  # Use string for simplicity
-    time = db.Column(db.String(80), nullable=False)  # Use string for simplicity
+    date = db.Column(db.String(80), nullable=False) 
+    time = db.Column(db.String(80), nullable=False)  
     location = db.Column(db.String(120), nullable=False)
 
 # Define the activities
@@ -161,37 +160,34 @@ def logout():
 
 @app.route('/log_hours', methods=['GET', 'POST'])
 def log_hours():
-    if request.method == 'POST':
-        hours = calculateTimeDifference(request.form.get('start_time'), request.form.get('end_time'))
-        if not hours:
-            hours_required = True
-            return redirect(url_for('volunteer'))
-        try:
-            hours = int(hours)
-        except ValueError:
-            invalid_hours = True
-            return redirect(url_for('volunteer'))
-        if hours <= 0:
-            less_than_zero = True
-            return redirect(url_for('volunteer'))
-        if hours > 24:
-            exceeded_24 = True
-            return redirect(url_for('volunteer'))
-        # Update current user's hours
-        current_user.hours += hours
-        db.session.commit()
-        activity_name = request.form.get('activity')
-        if not activity_name:
-            return "Activity name is required", 400
-        # Create a new activity entry
-        new_activity = Activity(
-            name=activity_name,
-            description=f"Logged {hours} hours for {activity_name}",
-            date=datetime.now().strftime('%Y-%m-%d'),
-            time=datetime.now().strftime('%H:%M'),
-        )
+    hours = calculateTimeDifference(request.form.get('start_time'), request.form.get('end_time'))
+    if not hours:
+        hours_required = True
+        return redirect(url_for('volunteer', hours_required=hours_required))
+    #if ValueError:
+        invalid_hours = True
+        return redirect(url_for('volunteer', invalid_hours=invalid_hours))
+    if hours <= 0:
+        less_than_zero = True
+        return redirect(url_for('volunteer', less_than_zero=less_than_zero))
+    if hours > 24:
+        exceeded_24 = True
+        return redirect(url_for('volunteer', exceeded_24=exceeded_24))
+    # Update current user's hours
+    current_user.hours += hours
+    db.session.commit()
+    activity_name = request.form.get('activity')
+    if not activity_name:
+        return "Activity name is required", 400
+    # Create a new activity entry
+    new_activity = Activity(
+        name=activity_name,
+        description=f"Logged {hours} hours for {activity_name}",
+        date=datetime.now().strftime('%Y-%m-%d'),
+        time=datetime.now().strftime('%H:%M'),
+    )
         
-        return redirect(url_for('volunteer'))
+    return redirect(url_for('volunteer'))
 
 # Sanitize page names to create routes
 def sanitize_route(page_name):
@@ -238,9 +234,15 @@ def calculate_badge(hours):
 @app.route('/volunteer')
 @login_required
 def volunteer():
+    exceeded_24 = request.args.get('exceeded_24', False, type=bool)
+    less_than_zero = request.args.get('less_than_zero', False, type=bool)
+    invalid_hours = request.args.get('invalid_hours', False, type=bool)
+    hours_required = request.args.get('hours_required', False, type=bool)
     hours = current_user.hours
     next_badge, remaining_hours, current_badge = calculate_badge(hours)
-    return render_template('volunteer.html', pages=pages, users=users, activities=activities, hours=hours, next_badge=next_badge, remaining_hours=remaining_hours, current_badge=current_badge, hours_required=hours_required)
+    return render_template('volunteer.html', pages=pages, users=users, activities=activities, hours=hours,
+                            next_badge=next_badge, remaining_hours=remaining_hours, current_badge=current_badge, 
+                            exceeded_24=exceeded_24, less_than_zero=less_than_zero, invalid_hours=invalid_hours, hours_required=hours_required)
 
 def calculateTimeDifference(start_time, end_time):
     # convert start_time and end_time to hours

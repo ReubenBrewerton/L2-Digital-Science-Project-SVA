@@ -61,15 +61,15 @@
                     <button type="submit" id="log_hours_button">Log Hours</button><br>
                     </form>
                     {% if hours_required == True %}
-                    <p style="color: red; font-weight: bold;">Hours are required</p>
+                        <p style="color: red; font-weight: bold;">Hours are required</p>
                     {% elif invalid_hours == True %}
-                    <p style="color: red; font-weight: bold;">Invalid hours format</p>
+                        <p style="color: red; font-weight: bold;">Invalid hours format</p>
                     {% elif less_than_0 == True %}
-                    <p style="color: red; font-weight: bold;">Hours must be greater than 0</p>
+                        <p style="color: red; font-weight: bold;">Hours must be greater than 0</p>
                     {% elif exceeded_24 == True %}
-                    <p style="color: red; font-weight: bold;">Hours cannot exceed 24 hours</p>
+                        <p style="color: red; font-weight: bold;">Hours cannot exceed 24 hours</p>
                     {% elif success == True %}
-                    <p style="color: green; font-weight: bold;">Hours logged successfully!</p>
+                        <p style="color: green; font-weight: bold;">Hours logged successfully!</p>
                     {% endif %}
                 </div>
             </div>
