@@ -1,3 +1,5 @@
+'''Python for'''
+
 from flask import Flask, render_template, request, redirect, session, url_for, g 
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
@@ -5,6 +7,7 @@ from sqlalchemy import text
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash 
 from datetime import datetime
+import re
 
 # Pages
 pages = ["Home", "About", "Contact", "Volunteer"]
@@ -97,8 +100,11 @@ def index():
 def signup():
     if request.method == 'POST':
         email = request.form.get('email')
+        valid = re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
         if not email:
             return "Email is required", 400
+        if not valid:
+            return render_template('signup.html', pages=pages, invalid_email=True)  # Redirect to signup if email is invalid
         password = request.form.get('password')
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -164,9 +170,6 @@ def log_hours():
     if not hours:
         hours_required = True
         return redirect(url_for('volunteer', hours_required=hours_required))
-    #if ValueError:
-        invalid_hours = True
-        return redirect(url_for('volunteer', invalid_hours=invalid_hours))
     if hours <= 0:
         less_than_zero = True
         return redirect(url_for('volunteer', less_than_zero=less_than_zero))
@@ -263,10 +266,6 @@ def contact():
         name = request.form.get('name')
         message = request.form.get('message')
 
-        # Check if the user already exists
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
-            return redirect(url_for('index'))
         
         # Create a new contact entry
         new_contact = Contact(email=email, name=name, message=message)

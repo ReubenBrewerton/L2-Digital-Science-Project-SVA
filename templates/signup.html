@@ -19,12 +19,13 @@
         </form>
         {% if success==True %}
         <p style="color: green; font-weight: bold;">Sign up successful! You can now log in.</p>
+        <p>Click <a href="{{ url_for('login') }}">here</a> to log in.</p>
+        {% elif invalid_email==True %}
+        <p style="color: red; font-weight: bold;">Invalid email format. Please enter a valid email.</p>
         {% elif existing==True %}
         <p style="color: red; font-weight: bold;">An account with that email already exists.</p>
         {% elif passwords_match==False %}
         <p style="color: red; font-weight: bold;">Passwords do not match. Please try again.</p>
-        {% else %}
-        <p style="color: red; font-weight: bold;">Please fill out all fields with the correct information.</p>
         {% endif %}
         
     </div>
